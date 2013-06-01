@@ -1,6 +1,3 @@
 ---
-app_base_dir: /opt/wwc
-log_base_dir: /opt/logs
-os_name: ubuntu
-
-secure_dir: 'secrets'
+app_base_dir: /var/www/html
+secure_dir: '../secrets'

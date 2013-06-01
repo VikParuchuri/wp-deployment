@@ -1,0 +1,49 @@
+---
+- name: create user group
+  group: name=wp state=present
+
+- name: add ubuntu to wp
+  user: name=ubuntu append=yes groups="adm,wp"
+
+- name: Create www-data user
+  user: name=www-data append=yes groups="adm,wp" shell=/bin/bash
+
+- name: upload sudoers.d file
+  copy: src=sudoers-admin dest=/tmp/admin-sudo owner=root group=root mode=0440
+
+- name: move file to sudoers.d
+  shell: visudo -q -c -f /tmp/admin-sudo && cp /tmp/admin-sudo /etc/sudoers.d/admin-sudo
+
+- name: install apt requirements
+  apt: pkg={{item}} state=present update_cache=yes install_recommends=yes
+  with_items:
+    - mysql
+    - php
+    - php-mysql
+    - apache2
+    - python-mysqldb
+  notify: restart apache
+
+- name: setup mysql database
+  mysql_db: db={{database_name}} state=present login_host={{database_host}} login_password={{database_root_password}} login_user={{database_root_user}}
+  notify: restart apache
+
+- name: setup mysql user
+  mysql_user: mysql_user: name={{database_user}} password={{database_password}} priv={{database_name}}.*:ALL state=present login_host={{database_host}} login_password={{database_root_password}} login_user={{database_root_user}}
+  notify: restart apache
+
+- name: download wordpress
+  get_url: url=http://wordpress.org/latest.tar.gz dest={{app_base_dir}}/{{wp-dir-name}}.tar.gz mode=0764
+
+- name: untar wordpress
+  command: tar -xzvf {{wp-dir-name}}.tar.gz creates={{app_base_dir}}/{{wp-dir-name}}/wp-created chdir = {{app_base_dir}}
+  notify: restart apache
+
+- name: render wp-config.php from template
+  template: src=wp-config.php.j2 dest={{app_base_dir}}/{{wp-dir-name}}/wp-config.php owner=root group=root mode=0644
+  notify: restart apache
+
+
+
+
+
