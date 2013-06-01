@@ -17,10 +17,14 @@
 - name: install apt requirements
   apt: pkg={{item}} state=present update_cache=yes install_recommends=yes
   with_items:
-    - mysql
-    - php
-    - php-mysql
+    - mysql-client-5.5
+    - mysql-common
+    - php5-common
+    - php5-mysql
     - apache2
+    - apache2-utils
+    - apache2.2-common
+    - libapache2-mod-php5
     - python-mysqldb
   notify: restart apache
 
@@ -28,7 +32,7 @@
   mysql_db: db={{database_name}} state=present login_host={{database_host}} login_password={{database_root_password}} login_user={{database_root_user}}
 
 - name: setup mysql user
-  mysql_user: mysql_user: name={{database_user}} password={{database_password}} priv={{database_name}}.*:ALL state=present login_host={{database_host}} login_password={{database_root_password}} login_user={{database_root_user}}
+  mysql_user: name={{database_user}} password={{database_password}} priv={{database_name}}.*:ALL state=present login_host={{database_host}} login_password={{database_root_password}} login_user={{database_root_user}}
 
 - name: download wordpress
   get_url: url=http://wordpress.org/latest.tar.gz dest={{app_base_dir}}/{{site_name}}.tar.gz mode=0764
