@@ -56,16 +56,15 @@
             "cc2.8xlarge" : { "Arch" : "64HVM" },
             "cg1.4xlarge" : { "Arch" : "64HVM" }
         },
-
-        "AWSRegionArch2AMI" : {
-            "us-east-1"      : { "32" : "ami-31814f58", "64" : "ami-1b814f72", "64HVM" : "ami-0da96764" },
-            "us-west-2"      : { "32" : "ami-38fe7308", "64" : "ami-30fe7300", "64HVM" : "NOT_YET_SUPPORTED" },
-            "us-west-1"      : { "32" : "ami-11d68a54", "64" : "ami-1bd68a5e", "64HVM" : "NOT_YET_SUPPORTED" },
-            "eu-west-1"      : { "32" : "ami-973b06e3", "64" : "ami-953b06e1", "64HVM" : "NOT_YET_SUPPORTED" },
-            "ap-southeast-1" : { "32" : "ami-b4b0cae6", "64" : "ami-beb0caec", "64HVM" : "NOT_YET_SUPPORTED" },
-            "ap-southeast-2" : { "32" : "ami-b3990e89", "64" : "ami-bd990e87", "64HVM" : "NOT_YET_SUPPORTED" },
-            "ap-northeast-1" : { "32" : "ami-0644f007", "64" : "ami-0a44f00b", "64HVM" : "NOT_YET_SUPPORTED" },
-            "sa-east-1"      : { "32" : "ami-3e3be423", "64" : "ami-3c3be421", "64HVM" : "NOT_YET_SUPPORTED" }
+        "AWSRegionArch2AMI":{
+            "us-east-1":       { "32":"ami-def89fb7", "64":"ami-d0f89fb9" },
+            "us-west-1":       { "32":"ami-fc002cb9", "64":"ami-fe002cbb" },
+            "us-west-2":       { "32":"ami-0ef96e3e", "64":"ami-70f96e40" },
+            "eu-west-1":       { "32":"ami-c27b6fb6", "64":"ami-ce7b6fba" },
+            "sa-east-1":       { "32":"ami-a1da00bc", "64":"ami-a3da00be" },
+            "ap-southeast-1":  { "32":"ami-66084734", "64":"ami-64084736" },
+            "ap-southeast-2":  { "32":"ami-06ea7a3c", "64":"ami-04ea7a3e" },
+            "ap-northeast-1":  { "32":"ami-fc6ceefd", "64":"ami-fe6ceeff" }
         }
     },
 
@@ -83,6 +82,21 @@
             "Properties":{
                 "Path":"/",
                 "Policies":[
+                    {
+                        "PolicyName":"root",
+                        "PolicyDocument":{
+                            "Statement":[
+                                {
+                                    "Effect":"Allow",
+                                    "Action":[
+                                        "cloudformation:DescribeStackResource",
+                                        "s3:Put"
+                                    ],
+                                    "Resource":"*"
+                                }
+                            ]
+                        }
+                    }
                 ]
             }
         },
@@ -144,27 +158,7 @@
                                 "exec >> /home/ubuntu/cflog.log\n",
                                 "exec 2>> /home/ubuntu/cflog.log\n",
                                 "function error_exit\n",
-                                "{\n",,
-                "SecurityGroupEgress" : [
-                    {
-                        "IpProtocol" : "tcp",
-                        "FromPort" : "80",
-                        "ToPort" : "80",
-                        "CidrIp" : "0.0.0.0/0"
-                    },
-                    {
-                        "IpProtocol" : "tcp",
-                        "FromPort" : "443",
-                        "ToPort" : "443",
-                        "CidrIp" : "0.0.0.0/0"
-                    },
-                    {
-                        "IpProtocol" : "tcp",
-                        "FromPort" : "9418",
-                        "ToPort" : "9418",
-                        "CidrIp" : "0.0.0.0/0"
-                    }
-                ]
+                                "{\n",
                                 "  cfn-signal -e 1 -r \"$1\" '",
                                 {
                                     "Ref":"WaitHandle"
@@ -247,7 +241,7 @@
             "DependsOn" : "WebServer",
             "Properties" : {
                 "Handle" : {"Ref" : "WaitHandle"},
-                "Timeout" : "300"
+                "Timeout" : "600"
             }
         },
 
