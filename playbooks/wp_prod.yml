@@ -1,0 +1,9 @@
+# ansible-playbook -vvv --user=ubuntu  wp_prod.yml -i ./ec2.py  -c ssh
+
+- hosts:
+    - tag_Group_wordpress_prod
+  vars_files:
+    - "{{ secure_dir }}/vars/wordpress_prod_vars.yml"
+  roles:
+    - wp
+  sudo: True

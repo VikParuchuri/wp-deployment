@@ -36,3 +36,9 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+#Ansible secrets
+!.vc
+secrets/vars/*
+secrets/keys/*
+secrets/users/*
