@@ -124,8 +124,14 @@
                 }
             },
             "Properties": {
-                "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
-                    { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
+                "ImageId" : {
+                    "Fn::FindInMap" :
+                            [
+                                "AWSRegionArch2AMI",
+                                { "Ref" : "AWS::Region" },
+                                { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] }
+                            ]
+                },
                 "InstanceType"   : { "Ref" : "InstanceType" },
                 "SecurityGroups" : [ {"Ref" : "WebServerSecurityGroup"} ],
                 "KeyName"        : { "Ref" : "KeyName" },
@@ -138,7 +144,27 @@
                                 "exec >> /home/ubuntu/cflog.log\n",
                                 "exec 2>> /home/ubuntu/cflog.log\n",
                                 "function error_exit\n",
-                                "{\n",
+                                "{\n",,
+                "SecurityGroupEgress" : [
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort" : "80",
+                        "ToPort" : "80",
+                        "CidrIp" : "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort" : "443",
+                        "ToPort" : "443",
+                        "CidrIp" : "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort" : "9418",
+                        "ToPort" : "9418",
+                        "CidrIp" : "0.0.0.0/0"
+                    }
+                ]
                                 "  cfn-signal -e 1 -r \"$1\" '",
                                 {
                                     "Ref":"WaitHandle"
@@ -230,15 +256,24 @@
             "Properties" : {
                 "GroupDescription" : "Enable HTTP access via port 80 and SSH access",
                 "SecurityGroupIngress" : [
-                    {"IpProtocol" : "tcp", "FromPort" : "80", "ToPort" : "80", "CidrIp" : "0.0.0.0/0"},
-                    {"IpProtocol" : "tcp", "FromPort" : "22", "ToPort" : "22", "CidrIp" : { "Ref" : "SSHLocation"}},
-                    {"IpProtocol" : "tcp", "FromPort" : "443", "ToPort" : "443", "CidrIp" : "0.0.0.0/0"}
-                ],
-                "SecurityGroupEgress" : [
-                    {"IpProtocol" : "tcp", "FromPort" : "80", "ToPort" : "80", "CidrIp" : "0.0.0.0/0"},
-                    {"IpProtocol" : "tcp", "FromPort" : "443", "ToPort" : "443", "CidrIp" : "0.0.0.0/0"},
-                    {"IpProtocol" : "tcp", "FromPort" : "9418", "ToPort" : "9418", "CidrIp" : "0.0.0.0/0"}
-
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort" : "80",
+                        "ToPort" : "80",
+                        "CidrIp" : "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort" : "22",
+                        "ToPort" : "22",
+                        "CidrIp" : { "Ref" : "SSHLocation"}
+                    },
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort" : "443",
+                        "ToPort" : "443",
+                        "CidrIp" : "0.0.0.0/0"
+                    }
                 ]
             }
         }
