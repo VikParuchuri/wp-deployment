@@ -1,3 +1,7 @@
 database_name: wordpress
-wp_dir_name: wordpress
+site_name: wordpress
 wp_user: www-data
+wp_allow_multisite: true
+mu_plugin_name: mu_plugin
+wp_plugin_directory: wp-content/plugins
+sunrise_state: on

@@ -1,9 +1,9 @@
 <VirtualHost *:80>
         ServerAdmin {{wp_user}}@localhost
 
-        DocumentRoot {{app_base_dir}}/{{wp_dir_name}}
+        DocumentRoot {{app_base_dir}}
 
-        <Directory {{app_base_dir}}/{{wp_dir_name}}>
+        <Directory {{app_base_dir}}>
             AllowOverride All
             Order allow,deny
             allow from all
