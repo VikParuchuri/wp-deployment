@@ -26,6 +26,9 @@ pip-log.txt
 .tox
 nosetests.xml
 
+#Pycharm stuff
+.idea/
+
 # Translations
 *.mo
 
