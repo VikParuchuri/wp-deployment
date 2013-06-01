@@ -1,2 +1,3 @@
 database_name: wordpress
 wp_dir_name: wordpress
+wp_user: www-data
