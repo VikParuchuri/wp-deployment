@@ -33,7 +33,7 @@
   mysql_db: db={{database_name}} state=present login_host={{database_host}} login_password={{database_root_password}} login_user={{database_root_user}}
 
 - name: setup mysql user
-  mysql_user: name={{database_user}} password={{database_password}} priv={{database_name}}.*:ALL state=present login_host={{database_host}} login_password={{database_root_password}} login_user={{database_root_user}}
+  mysql_user: name={{database_user}} password={{database_password}} priv={{database_name}}.*:ALL state=present login_host={{database_host}} login_password={{database_root_password}} login_user={{database_root_user}} host=%
 
 - name: download wordpress
   get_url: url=http://wordpress.org/latest.tar.gz dest={{app_base_dir}}/{{site_name}}.tar.gz mode=0764
