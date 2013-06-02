@@ -42,14 +42,18 @@
   shell: tar -xzvf {{site_name}}.tar.gz creates=${app_base_dir}/wp-created chdir=${app_base_dir}
 
 - name: create lock file
-  file: path=${app_base_dir}/wp-created state=present
+  copy: src=lockfile dest=${app_base_dir}/wp-created owner=www-data group=wp mode=0644
+
+#The creates keyword does not always seem to work, and sometimes the command after this will try to run and fail
+- name: add wordpress directory
+  file: path={{app_base_dir}}/wordpress state=directory
 
 #Required for the multisite domain mapping to work
 - name: move files from wordpress directory to top level dir
   shell: cp -r {{app_base_dir}}/wordpress/* {{app_base_dir}} chdir={{app_base_dir}}/wordpress creates=${app_base_dir}/wp-moved
 
 - name: create lock file
-  file: path=${app_base_dir}/wp-moved state=present
+  copy: src=lockfile dest=${app_base_dir}/wp-moved owner=www-data group=wp mode=0644
 
 - name: remove wordpress directory
   file: path={{app_base_dir}}/wordpress state=absent
@@ -61,17 +65,20 @@
   get_url: url=http://downloads.wordpress.org/plugin/wordpress-mu-domain-mapping.0.5.4.3.zip dest={{app_base_dir}}/{{mu_plugin_name}}.zip mode=0764
 
 - name: create plugin directory
-  file: path={{app_base_dir}}/{{mu_plugin_directory}} state=directory
+  file: path={{app_base_dir}}/{{wp_plugin_directory}} state=directory
 
 - name: unzip mu plugin
-  shell: unzip ${mu_plugin_name}.zip -u -d ${app_base_dir}/${mu_plugin_directory} chdir=${app_base_dir} creates=${app_base_dir}/mu-plugin-created
+  shell: unzip {{mu_plugin_name}}.zip -d {{app_base_dir}}/{{wp_plugin_directory}} chdir={{app_base_dir}} creates={{app_base_dir}}/mu-plugin-created
   notify: restart apache
 
 - name: create lock file
-  file: path=${app_base_dir}/mu-plugin-created state=present
+  copy: src=lockfile dest=${app_base_dir}/mu-plugin-created owner=www-data group=wp mode=0644
 
 - name: move sunrise.php
-  shell: mv {{app_base_dir}}/{{mu_plugin_directory}}/{{mu_plugin_name}}/sunrise.php {{app_base_dir}}/wp-content/sunrise.php
+  shell: mv {{app_base_dir}}/{{wp_plugin_directory}}/{{mu_plugin_name}}/sunrise.php {{app_base_dir}}/wp-content/sunrise.php creates={{app_base_dir}}/sunrise-moved
+
+- name: create lock file
+  copy: src=lockfile dest=${app_base_dir}/sunrise-moved owner=www-data group=wp mode=0644
 
 - name: change ownership on files in wordpress directory to wp_user
   shell: chown -R {{wp_user}}:wp {{app_base_dir}}
@@ -80,7 +87,7 @@
   shell: chown root:root {{app_base_dir}}
 
 - name: create apache directory and set perms
-  file: path=/etc/apache2/sites-available owner=root group=edx mode=2775 state=directory
+  file: path=/etc/apache2/sites-available owner=root group=wp mode=2775 state=directory
 
 - name: Removing default apache config
   file: path=/etc/apache2/sites-enabled/default state=absent
@@ -91,7 +98,7 @@
   notify: restart apache
 
 - name: Creating config link to sites available
-  file: src=/etc/apache2/sites-available/{{site_name}} dest=/etc/nginx/sites-enabled/{{site_name}} state=link owner=root group=root
+  file: src=/etc/apache2/sites-available/{{site_name}} dest=/etc/apache2/sites-enabled/{{site_name}} state=link owner=root group=root
   notify: restart apache
 
 

@@ -2,6 +2,6 @@ database_name: wordpress
 site_name: wordpress
 wp_user: www-data
 wp_allow_multisite: true
-mu_plugin_name: mu_plugin
+mu_plugin_name: wordpress-mu-domain-mapping
 wp_plugin_directory: wp-content/plugins
 sunrise_state: on
