@@ -1,0 +1,3 @@
+mu_plugin_name: wordpress-mu-domain-mapping
+wp_plugin_directory: wp-content/plugins
+wp_user: www-data

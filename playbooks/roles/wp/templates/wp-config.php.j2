@@ -83,13 +83,13 @@ define('WP_DEBUG', false);
 /* Multisite */
 define('WP_ALLOW_MULTISITE', {{wp_allow_multisite}});
 
+/* Insert sunrise config here */
+
 /* That's all, stop editing! Happy blogging. */
 
 /** Absolute path to the WordPress directory. */
 if ( !defined('ABSPATH') )
 	define('ABSPATH', dirname(__FILE__) . '/');
-
-define( 'SUNRISE', '{{sunrise_state}}' );
 
 /** Sets up WordPress vars and included files. */
 require_once(ABSPATH . 'wp-settings.php');
