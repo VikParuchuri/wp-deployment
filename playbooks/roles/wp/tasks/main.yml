@@ -26,6 +26,7 @@
     - apache2.2-common
     - libapache2-mod-php5
     - python-mysqldb
+    - unzip
   notify: restart apache
 
 - name: setup mysql database
@@ -38,17 +39,36 @@
   get_url: url=http://wordpress.org/latest.tar.gz dest={{app_base_dir}}/{{site_name}}.tar.gz mode=0764
 
 - name: untar wordpress
-  command: tar -xzvf -C {{app_base_dir}} {{site_name}}.tar.gz creates={{app_base_dir}}/wp-created chdir = {{app_base_dir}}
+  shell: tar -xzvf {{site_name}}.tar.gz creates=${app_base_dir}/wp-created chdir=${app_base_dir}
+
+- name: create lock file
+  file: path=${app_base_dir}/wp-created state=present
+
+#Required for the multisite domain mapping to work
+- name: move files from wordpress directory to top level dir
+  shell: cp -r {{app_base_dir}}/wordpress/* {{app_base_dir}} chdir={{app_base_dir}}/wordpress creates=${app_base_dir}/wp-moved
+
+- name: create lock file
+  file: path=${app_base_dir}/wp-moved state=present
+
+- name: remove wordpress directory
+  file: path={{app_base_dir}}/wordpress state=absent
 
 - name: render wp-config.php from template
   template: src=wp-config.php.j2 dest={{app_base_dir}}/wp-config.php owner=root group=root mode=0644
 
 - name: get wordpress domain mapping plugin to enable multiple domains to be used
-  get_url: url=http://downloads.wordpress.org/plugin/wordpress-mu-domain-mapping.0.5.4.3.zip dest={{app_base_dir}}/{{mu_plugin_name}}.tar.gz mode=0764
+  get_url: url=http://downloads.wordpress.org/plugin/wordpress-mu-domain-mapping.0.5.4.3.zip dest={{app_base_dir}}/{{mu_plugin_name}}.zip mode=0764
 
-- name: untar mu plugin
-  command: tar -xzvf -C {{mu_plugin_directory}}/{{mu_plugin_name}} {{mu_plugin_name}}.tar.gz creates={{app_base_dir}}/mu-plugin-created chdir = {{app_base_dir}}
+- name: create plugin directory
+  file: path={{app_base_dir}}/{{mu_plugin_directory}} state=directory
+
+- name: unzip mu plugin
+  shell: unzip ${mu_plugin_name}.zip -u -d ${app_base_dir}/${mu_plugin_directory} chdir=${app_base_dir} creates=${app_base_dir}/mu-plugin-created
   notify: restart apache
+
+- name: create lock file
+  file: path=${app_base_dir}/mu-plugin-created state=present
 
 - name: move sunrise.php
   shell: mv {{app_base_dir}}/{{mu_plugin_directory}}/{{mu_plugin_name}}/sunrise.php {{app_base_dir}}/wp-content/sunrise.php
