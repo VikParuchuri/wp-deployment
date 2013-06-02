@@ -64,6 +64,12 @@
 - name: render wp-config.php from template
   template: src=wp-config.php.j2 dest={{app_base_dir}}/wp-config.php owner=root group=root mode=0644
 
+- name: create directory for xcloner backup admin
+  file: path={{app_base_dir}}/administrator/backups state=directory owner=root group=wp mode=2775
+
+- name: create directory for xcloner backup
+  file: path={{app_base_dir}}/xcloner-backups state=directory owner=root group=wp mode=2775
+
 - name: change ownership on files in wordpress directory to wp_user
   shell: chown -R {{wp_user}}:wp {{app_base_dir}}
 

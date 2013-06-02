@@ -90,7 +90,9 @@
                                     "Effect":"Allow",
                                     "Action":[
                                         "cloudformation:DescribeStackResource",
-                                        "s3:Put"
+                                        "s3:Put",
+                                        "ses:SendEmail",
+                                        "ses:SendRawEmail"
                                     ],
                                     "Resource":"*"
                                 }
