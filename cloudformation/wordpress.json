@@ -244,7 +244,27 @@
                 "Timeout" : "600"
             }
         },
-
+        "WebServerELB":{
+            "Type":"AWS::ElasticLoadBalancing::LoadBalancer",
+            "Properties":{
+                "Listeners":[
+                    {
+                        "LoadBalancerPort":"80",
+                        "InstancePort": "80",
+                        "Protocol":"HTTP"
+                    }
+                ],
+                "HealthCheck":{
+                    "Target":"TCP:22",
+                    "HealthyThreshold":"3",
+                    "UnhealthyThreshold":"5",
+                    "Interval":"30",
+                    "Timeout":"5"
+                },
+                "Instances": [{ "Ref" : "WebServer"}],
+                "AvailabilityZones": { "Fn::GetAZs" : { "Ref" : "AWS::Region" } }
+            }
+        },
         "WebServerSecurityGroup" : {
             "Type" : "AWS::EC2::SecurityGroup",
             "Properties" : {
@@ -273,9 +293,9 @@
         }
     },
     "Outputs" : {
-        "WebsiteURL" : {
-            "Value" :  { "Fn::GetAtt" : [ "WebServer", "PublicDnsName" ]},
-            "Description" : "WordPress Website"
+        "ELBAddress" : {
+            "Description" : "WebServer ELB Address",
+            "Value" :  { "Fn::GetAtt" : [ "WebServerELB", "DNSName" ]}
         }
     }
 }

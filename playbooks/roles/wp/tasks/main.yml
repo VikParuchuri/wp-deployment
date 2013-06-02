@@ -35,6 +35,9 @@
 - name: setup mysql user
   mysql_user: name={{database_user}} password={{database_password}} priv={{database_name}}.*:ALL state=present login_host={{database_host}} login_password={{database_root_password}} login_user={{database_root_user}} host=%
 
+- name: create www directory if needed
+  file: path={{app_base_dir}} state=directory
+
 - name: download wordpress
   get_url: url=http://wordpress.org/latest.tar.gz dest={{app_base_dir}}/{{site_name}}.tar.gz mode=0764
 
@@ -85,6 +88,12 @@
 - name: Creating config link to sites available
   file: src=/etc/apache2/sites-available/{{site_name}} dest=/etc/apache2/sites-enabled/{{site_name}} state=link owner=root group=root
   notify: restart apache
+
+- name: disable default site
+  shell: a2dissite default
+
+- name: enable wordpress site
+  shell: a2ensite {{site_name}}
 
 
 

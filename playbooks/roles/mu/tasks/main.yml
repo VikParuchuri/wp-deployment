@@ -3,8 +3,8 @@
   lineinfile: dest={{app_base_dir}}/wp-config.php regexp="$item" insertafter=sunrise line="$item"
   with_items:
     - "define( 'SUNRISE', 'on' );\n"
-    - "define('SUBDOMAIN_INSTALL', false);\n"
-    - "define('DOMAIN_CURRENT_SITE','$inventory_hostname');\n"
+    - "define('SUBDOMAIN_INSTALL', true);\n"
+    - "define('DOMAIN_CURRENT_SITE','$elb_address');\n"
     - "define('PATH_CURRENT_SITE', '/');\n"
     - "define('SITE_ID_CURRENT_SITE', 1);\n"
     - "define('BLOG_ID_CURRENT_SITE', 1);\n"
