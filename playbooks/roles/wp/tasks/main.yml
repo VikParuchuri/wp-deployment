@@ -70,6 +70,10 @@
 - name: create apache directory and set perms
   file: path=/etc/apache2/sites-available owner=root group=wp mode=2775 state=directory
 
+- name: enable apache mod_rewrite
+  shell: sudo a2enmod rewrite
+  notify: restart apache
+
 - name: Removing default apache config
   file: path=/etc/apache2/sites-enabled/default state=absent
   notify: restart apache
