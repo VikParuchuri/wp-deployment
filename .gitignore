@@ -39,6 +39,7 @@ nosetests.xml
 
 #Ansible secrets
 !.vc
+!*.template
 secrets/vars/*
 secrets/keys/*
 secrets/users/*

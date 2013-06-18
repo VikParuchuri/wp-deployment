@@ -305,6 +305,10 @@
         "ELBAddress" : {
             "Description" : "WebServer ELB Address",
             "Value" :  { "Fn::GetAtt" : [ "WebServerELB", "DNSName" ]}
+        },
+        "ServerAddress" : {
+            "Description" : "WebServer EC2 Instance Address",
+            "Value" :  { "Fn::GetAtt" : [ "WebServer", "PublicDnsName" ]}
         }
     }
 }
