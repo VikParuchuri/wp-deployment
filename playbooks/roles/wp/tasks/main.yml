@@ -35,6 +35,12 @@
 
 - name: setup mysql user
   mysql_user: name={{database_user}} password={{database_password}} priv={{database_name}}.*:ALL state=present login_host={{database_host}} login_password={{database_root_password}} login_user={{database_root_user}} host=%
+  when: database_host not in ["localhost", "127.0.0.1"]
+
+- name: setup mysql user
+  mysql_user: name={{database_user}} password={{database_password}} priv={{database_name}}.*:ALL state=present login_host={{database_host}} login_password={{database_root_password}} login_user={{database_root_user}}
+  when: database_host in ["localhost", "127.0.0.1"]
+
 
 - name: create www directory if needed
   file: path={{app_base_dir}} state=directory
