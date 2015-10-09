@@ -222,20 +222,17 @@
                 "Tags" : [
                     {
                         "Key":"application",
-                        "Value": {"Ref" : "ApplicationTag"},
-                        "PropagateAtLaunch":true
+                        "Value": {"Ref" : "ApplicationTag"}
                     },
                     {
                         "Key":"environment",
-                        "Value": {"Ref" : "EnvironmentTag"},
-                        "PropagateAtLaunch":true
+                        "Value": {"Ref" : "EnvironmentTag"}
                     },
                     {
                         "Key":"Group",
                         "Value": {
                             "Fn::Join" : [ "_", [ {"Ref" : "ApplicationTag"} , {"Ref" : "EnvironmentTag"} ] ]
-                        },
-                        "PropagateAtLaunch":true
+                        }
                     }
                 ]
             }
